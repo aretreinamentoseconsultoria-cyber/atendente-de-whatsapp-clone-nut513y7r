@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 128" width="420" height="128" fill="none">
+  <defs>
+    <linearGradient id="aloLogoLine" x1="120" y1="22" x2="190" y2="92" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#57D067"/>
+      <stop offset="1" stop-color="#64D8B1"/>
+    </linearGradient>
+  </defs>
+  <!-- A maiúsculo desenhado em vetor -->
+  <path fill="#464B5F" fill-rule="evenodd" d="M10 84 31 27c1.2-3.8 3.3-5.6 7.1-5.6h3.6c3.8 0 5.9 1.8 7.2 5.6l21 57H56.5l-4.4-14.6H28.4L24 84H10Zm22.4-26.2h16.3l-8.1-25.5-8.2 25.5Z"/>
+  <!-- l minúsculo: haste arredondada e pé curvo, sem aparência de L -->
+  <path fill="#464B5F" d="M76 30c0-5 3.4-8.7 8.2-8.7 4.7 0 8.1 3.7 8.1 8.7v36.8c0 8.8 3.6 12.7 11.5 12.7h6.8v10.6h-8.2c-15.6 0-26.4-7.2-26.4-22.7V30Z"/>
+  <!-- balão fino ocupa o lugar do o -->
+  <path d="M125 39c0-8.8 7.1-15.9 15.9-15.9h27.2c8.8 0 15.9 7.1 15.9 15.9v19c0 8.8-7.1 15.9-15.9 15.9h-12.4l-12.1 8.9c-2.8 2-6.3-.6-5.1-3.9l2.1-5.3c-9-1.1-15.6-8.8-15.6-17.8V39Z" stroke="url(#aloLogoLine)" stroke-width="3.7" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="146" cy="49.5" r="3" fill="#2C8A55"/>
+  <circle cx="159" cy="49.5" r="3" fill="#2C8A55"/>
+  <circle cx="172" cy="49.5" r="3" fill="#2C8A55"/>
+  <text x="12" y="112" fill="#A3A5AF" font-family="Open Sans, Noto Sans, sans-serif" font-size="11" font-weight="600" letter-spacing="1.8">ATENDENTE WHATSAPP</text>
+</svg>
