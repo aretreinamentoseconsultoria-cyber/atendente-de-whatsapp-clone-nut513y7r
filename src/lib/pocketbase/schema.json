@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T14:19:55.643Z",
+  "generatedAt": "2026-11-10T14:22:52.923Z",
   "collections": [
     {
       "name": "users",
@@ -29,19 +29,514 @@
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate"]
+          "autodateTriggers": [
+            "onCreate"
+          ]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate", "onUpdate"]
+          "autodateTriggers": [
+            "onCreate",
+            "onUpdate"
+          ]
         }
       ],
       "indexes": [
         "CREATE UNIQUE INDEX `idx_tokenKey__pb_users_auth_` ON `users` (`tokenKey`)",
         "CREATE UNIQUE INDEX `idx_email__pb_users_auth_` ON `users` (`email`) WHERE `email` != ''"
+      ]
+    },
+    {
+      "name": "conversations",
+      "type": "base",
+      "apiRules": {
+        "list": "@request.auth.id != '' && user = @request.auth.id",
+        "view": "@request.auth.id != '' && user = @request.auth.id",
+        "create": "@request.auth.id != ''",
+        "update": "@request.auth.id != '' && user = @request.auth.id",
+        "delete": "@request.auth.id != '' && user = @request.auth.id"
+      },
+      "fields": [
+        {
+          "name": "contact_name",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "phone",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "last_message",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "last_message_at",
+          "type": "date",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "unread_count",
+          "type": "number",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "status",
+          "type": "select",
+          "required": true,
+          "system": false,
+          "selectValues": [
+            "urgent",
+            "normal",
+            "night",
+            "resolved"
+          ]
+        },
+        {
+          "name": "temperature",
+          "type": "select",
+          "required": false,
+          "system": false,
+          "selectValues": [
+            "hot",
+            "warm",
+            "cold"
+          ]
+        },
+        {
+          "name": "intent",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "ai_summary",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "sentiment_score",
+          "type": "number",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "risk_level",
+          "type": "select",
+          "required": false,
+          "system": false,
+          "selectValues": [
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        {
+          "name": "avatar_url",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "responded_at",
+          "type": "date",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "user",
+          "type": "relation",
+          "required": false,
+          "system": false,
+          "collectionRef": "users"
+        }
+      ],
+      "indexes": [
+        "CREATE INDEX idx_conversations_status ON conversations (status)",
+        "CREATE INDEX idx_conversations_last_msg ON conversations (last_message_at)",
+        "CREATE INDEX `idx_conversations_responded_at` ON `conversations` (responded_at)"
+      ]
+    },
+    {
+      "name": "messages",
+      "type": "base",
+      "apiRules": {
+        "list": "@request.auth.id != '' && user = @request.auth.id",
+        "view": "@request.auth.id != '' && user = @request.auth.id",
+        "create": "@request.auth.id != ''",
+        "update": "@request.auth.id != '' && user = @request.auth.id",
+        "delete": "@request.auth.id != '' && user = @request.auth.id"
+      },
+      "fields": [
+        {
+          "name": "conversation_id",
+          "type": "relation",
+          "required": true,
+          "system": false,
+          "collectionRef": "conversations"
+        },
+        {
+          "name": "direction",
+          "type": "select",
+          "required": true,
+          "system": false,
+          "selectValues": [
+            "inbound",
+            "outbound"
+          ]
+        },
+        {
+          "name": "body",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "sent_at",
+          "type": "date",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "message_type",
+          "type": "select",
+          "required": false,
+          "system": false,
+          "selectValues": [
+            "text",
+            "audio",
+            "image",
+            "document",
+            "template",
+            "video"
+          ]
+        },
+        {
+          "name": "media_url",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "transcription",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "media_duration",
+          "type": "number",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "file_name",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "file_size",
+          "type": "number",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "user",
+          "type": "relation",
+          "required": false,
+          "system": false,
+          "collectionRef": "users"
+        }
+      ],
+      "indexes": [
+        "CREATE INDEX idx_messages_conv ON messages (conversation_id)",
+        "CREATE INDEX idx_messages_sent ON messages (sent_at)"
+      ]
+    },
+    {
+      "name": "follow_ups",
+      "type": "base",
+      "apiRules": {
+        "list": "@request.auth.id != '' && user = @request.auth.id",
+        "view": "@request.auth.id != '' && user = @request.auth.id",
+        "create": "@request.auth.id != ''",
+        "update": "@request.auth.id != '' && user = @request.auth.id",
+        "delete": "@request.auth.id != '' && user = @request.auth.id"
+      },
+      "fields": [
+        {
+          "name": "conversation_id",
+          "type": "relation",
+          "required": true,
+          "system": false,
+          "collectionRef": "conversations"
+        },
+        {
+          "name": "due_date",
+          "type": "date",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "status",
+          "type": "select",
+          "required": true,
+          "system": false,
+          "selectValues": [
+            "pending",
+            "completed"
+          ]
+        },
+        {
+          "name": "note",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "user",
+          "type": "relation",
+          "required": false,
+          "system": false,
+          "collectionRef": "users"
+        }
+      ],
+      "indexes": [
+        "CREATE INDEX idx_followups_due ON follow_ups (due_date)",
+        "CREATE INDEX idx_followups_status ON follow_ups (status)"
+      ]
+    },
+    {
+      "name": "app_settings",
+      "type": "base",
+      "apiRules": {
+        "list": "@request.auth.id != '' && user = @request.auth.id",
+        "view": "@request.auth.id != '' && user = @request.auth.id",
+        "create": "@request.auth.id != ''",
+        "update": "@request.auth.id != '' && user = @request.auth.id",
+        "delete": "@request.auth.id != '' && user = @request.auth.id"
+      },
+      "fields": [
+        {
+          "name": "key",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "value",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "onboarding_completed",
+          "type": "bool",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "zernio_api_url",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "zernio_account_id",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "zernio_channel_id",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "zernio_api_token",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "zernio_connected",
+          "type": "bool",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "zernio_last_sync",
+          "type": "date",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "zernio_webhook_secret",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "zernio_auto_sync",
+          "type": "bool",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "zernio_sync_interval",
+          "type": "number",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "zernio_operation_mode",
+          "type": "select",
+          "required": false,
+          "system": false,
+          "selectValues": [
+            "read_only",
+            "full"
+          ]
+        },
+        {
+          "name": "user",
+          "type": "relation",
+          "required": false,
+          "system": false,
+          "collectionRef": "users"
+        }
+      ],
+      "indexes": [
+        "CREATE UNIQUE INDEX idx_app_settings_key ON app_settings (key)"
+      ]
+    },
+    {
+      "name": "agent_actions",
+      "type": "base",
+      "apiRules": {
+        "list": "@request.auth.id != '' && user = @request.auth.id",
+        "view": "@request.auth.id != '' && user = @request.auth.id",
+        "create": "@request.auth.id != ''",
+        "update": "@request.auth.id != '' && user = @request.auth.id",
+        "delete": "@request.auth.id != '' && user = @request.auth.id"
+      },
+      "fields": [
+        {
+          "name": "user",
+          "type": "relation",
+          "required": false,
+          "system": false,
+          "collectionRef": "users"
+        },
+        {
+          "name": "action_type",
+          "type": "select",
+          "required": true,
+          "system": false,
+          "selectValues": [
+            "create_template",
+            "send_message",
+            "send_template_message",
+            "create_follow_up",
+            "complete_follow_up",
+            "update_conversation_status",
+            "update_conversation_temperature",
+            "configure_zernio",
+            "sync_conversations"
+          ]
+        },
+        {
+          "name": "payload",
+          "type": "json",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "status",
+          "type": "select",
+          "required": true,
+          "system": false,
+          "selectValues": [
+            "proposed",
+            "approved",
+            "rejected",
+            "executed",
+            "failed"
+          ]
+        },
+        {
+          "name": "rejection_reason",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "result",
+          "type": "json",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "error_message",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "executed_at",
+          "type": "date",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "decided_at",
+          "type": "date",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "created",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": [
+            "onCreate"
+          ]
+        },
+        {
+          "name": "updated",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": [
+            "onCreate",
+            "onUpdate"
+          ]
+        }
+      ],
+      "indexes": [
+        "CREATE INDEX idx_agent_actions_status ON agent_actions (status)",
+        "CREATE INDEX idx_agent_actions_user ON agent_actions (user)",
+        "CREATE INDEX idx_agent_actions_created ON agent_actions (created)"
       ]
     }
   ]
